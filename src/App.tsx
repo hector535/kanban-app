@@ -1,9 +1,9 @@
+import { Button } from "./components/ui/button";
+
 function App() {
   return (
     <>
-      <div className="bg-purple">
-        <h1 className="text-h-sm">Hello world</h1>
-      </div>
+      <Button variant="secondary">Save changes</Button>
     </>
   );
 }
