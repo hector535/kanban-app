@@ -80,6 +80,9 @@ module.exports = {
           },
         ],
       },
+      fontFamily: {
+        sans: ["Plus Jakarta Sans", "sans-serif"],
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
