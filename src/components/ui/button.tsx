@@ -13,6 +13,7 @@ const buttonVariants = cva(
         secondary:
           "bg-purple/10 text-purple hover:bg-purple/20 dark:bg-white dark:hover:bg-purple/10",
         destructive: "bg-red text-white hover:bg-red-light",
+        ghost: "bg-transparent text-black hover:bg-slate-200",
       },
       size: {
         default:
