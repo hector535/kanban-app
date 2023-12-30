@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --height-toolbar: clamp(4rem, 3.2957rem + 3.005vw, 6rem);
+  }
+
   body {
     @apply font-sans text-b-lg text-gray bg-gray-very-light dark:bg-gray-super-dark;
   }
