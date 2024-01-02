@@ -3,11 +3,36 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    scrollbar-color: hsla(0, 0%, 50%, 0.45) hsla(0, 0%, 50%, 0.25);
+    scrollbar-width: thin;
+  }
+
   :root {
     --height-toolbar: clamp(4rem, 3.2957rem + 3.005vw, 6rem);
   }
 
   body {
     @apply font-sans text-b-lg text-gray bg-gray-very-light dark:bg-gray-super-dark;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: hsla(0, 0%, 50%, 0.25);
+    border-radius: 20px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 50%, 0.45);
+    border-radius: 20px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsla(0, 0%, 50%, 0.55);
   }
 }

@@ -6,6 +6,7 @@ type UIState = {
     showTaskDeletion: boolean;
     showTaskDetails: boolean;
     showTaskForm: boolean;
+    showBoardForm: boolean;
   };
 };
 
@@ -20,6 +21,7 @@ const initialState: UIState = {
     showTaskDeletion: false,
     showTaskDetails: false,
     showTaskForm: false,
+    showBoardForm: false,
   },
 };
 
