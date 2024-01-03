@@ -49,7 +49,7 @@ const MenuItem = (props: MenuOptionProps) => {
 
 export const BoardSelectionDialog = () => {
   return (
-    <Dialog open={true}>
+    <Dialog open={false}>
       <DialogContent className="gap-4 top-[calc(var(--height-toolbar)+15px)] translate-y-0 py-4 px-6 max-w-[20rem]">
         <DialogHeader>
           <DialogTitle className="text-xs font-bold tracking-[2.4px] uppercase text-gray">
