@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui";
 import { useAppDispatch } from "@/hooks";
+import { cn } from "@/lib/utils";
 import { setDialogVisibility } from "@/slices/ui-slice";
 
 export const Toolbar = () => {
@@ -21,8 +22,15 @@ export const Toolbar = () => {
     );
   };
 
+  const isBoardMenuOpen = true;
+
   return (
-    <header className="px-4 h-[var(--height-toolbar)] flex items-center bg-white">
+    <header
+      className={cn(
+        "px-4 h-[var(--height-toolbar)] flex items-center bg-white",
+        isBoardMenuOpen && "relative z-[100] pointer-events-auto"
+      )}
+    >
       <Logo />
       <Button variant="ghost" className="rounded-md gap-2 ml-3 px-2">
         <span className="text-h-lg text-black">Platform Launch</span>

@@ -1,5 +1,6 @@
 import {
   BoardFormDialog,
+  BoardSelectionDialog,
   DeleteBoardDialog,
   DeleteTaskDialog,
   TaskDetailDialog,
@@ -39,6 +40,7 @@ export const DialogContainers = () => {
       />
 
       <TaskDetailDialog />
+      <BoardSelectionDialog />
     </>
   );
 };
