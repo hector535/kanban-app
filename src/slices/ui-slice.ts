@@ -3,10 +3,11 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 type UIState = {
   dialogs: {
     showBoardDeletion: boolean;
+    showBoardSelection: boolean;
+    showBoardForm: boolean;
     showTaskDeletion: boolean;
     showTaskDetails: boolean;
     showTaskForm: boolean;
-    showBoardForm: boolean;
   };
 };
 
@@ -18,10 +19,11 @@ type DialogVisibility = {
 const initialState: UIState = {
   dialogs: {
     showBoardDeletion: false,
+    showBoardForm: false,
+    showBoardSelection: false,
     showTaskDeletion: false,
     showTaskDetails: false,
     showTaskForm: false,
-    showBoardForm: false,
   },
 };
 

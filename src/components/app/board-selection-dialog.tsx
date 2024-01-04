@@ -4,8 +4,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui";
-import { Board } from "@/components/icons";
+import { Board, EyeSlash } from "@/components/icons";
 import { ThemeSwitcher } from "@/components/app";
+import { useAppDispatch, useAppSelector, useViewport } from "@/hooks";
+import { useEffect, useState } from "react";
+import { setDialogVisibility } from "@/slices/ui-slice";
 
 const boards = [
   {
@@ -47,28 +50,62 @@ const MenuItem = (props: MenuOptionProps) => {
   );
 };
 
-export const BoardSelectionDialog = () => {
+const MenuItemList = () => {
   return (
-    <Dialog open={false}>
-      <DialogContent className="gap-4 top-[calc(var(--height-toolbar)+15px)] translate-y-0 py-4 px-6 max-w-[20rem]">
+    <ul className="-ml-6 max-h-[18rem] py-2 overflow-auto">
+      {boards.map(({ id, ...props }) => (
+        <MenuItem key={id} {...props} />
+      ))}
+
+      <MenuItem
+        className="text-purple [&>svg>path]:fill-purple"
+        name="+ Create New Board"
+      />
+    </ul>
+  );
+};
+
+export const BoardSelectionDialog = () => {
+  const showDialog = useAppSelector(
+    (state) => state.ui.dialogs.showBoardSelection
+  );
+  const dispatch = useAppDispatch();
+
+  const { vw } = useViewport();
+  const [displayAsModal, setDisplayAsModal] = useState(vw < 768);
+
+  const handleHideDialog = () => {
+    dispatch(
+      setDialogVisibility({
+        name: "showBoardSelection",
+        visibility: false,
+      })
+    );
+  };
+
+  useEffect(() => {
+    setDisplayAsModal(vw < 768);
+  }, [vw]);
+
+  return (
+    <Dialog open={showDialog} modal={displayAsModal}>
+      <DialogContent className="gap-4 top-[calc(var(--height-toolbar)+15px)] translate-y-0 py-4 px-6 max-w-[20rem] md:w-[var(--width-sidebar)] md:top-[var(--height-toolbar)] md:bottom-0 md:left-0 md:data-[state=open]:animate-slide-in md:data-[state=closed]:animate-slide-out md:py-8 md:shadow-none md:border-t-0 md:rounded-r-none md:gap-[1.125rem] md:grid-rows-[auto_auto_1fr_auto]">
         <DialogHeader>
           <DialogTitle className="text-xs font-bold tracking-[2.4px] uppercase text-gray">
             All Boards (3)
           </DialogTitle>
         </DialogHeader>
 
-        <ul className="-ml-6 max-h-[18rem] py-2 overflow-auto">
-          {boards.map(({ id, ...props }) => (
-            <MenuItem key={id} {...props} />
-          ))}
+        <MenuItemList />
 
-          <MenuItem
-            className="text-purple [&>svg>path]:fill-purple"
-            name="+ Create New Board"
-          />
-        </ul>
-
-        <ThemeSwitcher className="mx-[-0.5rem]" />
+        <ThemeSwitcher className="mx-[-0.5rem] md:self-end" />
+        <button
+          className="flex gap-2.5 items-center text-[0.9375rem] font-bold text-gray ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300"
+          onClick={handleHideDialog}
+        >
+          <EyeSlash />
+          Hide Sidebar
+        </button>
       </DialogContent>
     </Dialog>
   );

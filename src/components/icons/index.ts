@@ -6,3 +6,5 @@ export * from "./cross";
 export * from "./sun";
 export * from "./moon";
 export * from "./board";
+export * from "./eye";
+export * from "./eye-slash";

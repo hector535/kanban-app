@@ -10,6 +10,7 @@
 
   :root {
     --height-toolbar: clamp(4rem, 3.2957rem + 3.005vw, 6rem);
+    --width-sidebar: clamp(16.25rem, 13.39304rem + 5.952vw, 18.75rem);
   }
 
   body {
