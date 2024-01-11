@@ -94,7 +94,7 @@ const FormLabel = React.forwardRef<
     <Label
       ref={ref}
       className={cn(
-        `text-[0.75rem] font-bold ${
+        `transition-colors duration-200 text-[0.75rem] font-bold ${
           error ? "text-red-500" : "text-gray dark:text-white"
         }`,
         className
@@ -139,7 +139,10 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-sm text-slate-500 dark:text-slate-400", className)}
+      className={cn(
+        "transition-colors duration-200 text-sm text-slate-500 dark:text-slate-400",
+        className
+      )}
       {...props}
     />
   );
@@ -161,7 +164,10 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.71875rem] font-bold text-red-500", className)}
+      className={cn(
+        "transition-colors duration-200 text-[0.71875rem] font-bold text-red-500",
+        className
+      )}
       {...props}
     >
       {body}

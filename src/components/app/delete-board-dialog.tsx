@@ -8,27 +8,35 @@ import {
   DialogDescription,
 } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { setDialogVisibility } from "@/slices/ui-slice";
+import { removeBoard } from "@/slices/app-slice";
+import { toggleField } from "@/slices/ui-slice";
+import { useToast } from "../ui/use-toast";
 
 export const DeleteBoardDialog = () => {
-  const { showBoardDeletion } = useAppSelector((state) => state.ui.dialogs);
+  const showDialog = useAppSelector(
+    (state) => state.ui.showDeleteBoardConfirmation
+  );
+  const board = useAppSelector(
+    (state) => state.app.boards[state.app.selectedBoardId]
+  );
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
-  const dispatchDialogVisibility = () => {
-    dispatch(
-      setDialogVisibility({
-        name: "showBoardDeletion",
-        visibility: false,
-      })
-    );
+  const handleCancelClick = () => {
+    dispatch(toggleField({ name: "showDeleteBoardConfirmation" }));
   };
 
-  const handleBoardDeletion = () => {
-    dispatchDialogVisibility();
+  const handleDeleteClick = () => {
+    dispatch(removeBoard());
+    dispatch(toggleField({ name: "showDeleteBoardConfirmation" }));
+    toast({
+      variant: "success",
+      description: "The board has been deleted successfully.",
+    });
   };
 
   return (
-    <Dialog open={showBoardDeletion}>
+    <Dialog open={showDialog}>
       <DialogContent>
         <DialogHeader className="space-y-6">
           <DialogTitle className="text-red text-[1.125rem] leading-[1.4375rem] font-bold">
@@ -36,8 +44,8 @@ export const DeleteBoardDialog = () => {
           </DialogTitle>
           <DialogDescription>
             Are you sure you want to delete the
-            <span className="font-bold"> Platform Launch</span> board? This
-            action will remove all columns and tasks and cannot be reversed.
+            <span className="font-bold"> {board?.name}</span> board? This action
+            will remove all columns and tasks and cannot be reversed.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="space-y-4 md:space-y-0 md:flex md:gap-4">
@@ -45,7 +53,7 @@ export const DeleteBoardDialog = () => {
             type="button"
             variant="destructive"
             className="w-full"
-            onClick={handleBoardDeletion}
+            onClick={handleDeleteClick}
           >
             Delete
           </Button>
@@ -53,7 +61,7 @@ export const DeleteBoardDialog = () => {
             type="button"
             variant="secondary"
             className="w-full"
-            onClick={dispatchDialogVisibility}
+            onClick={handleCancelClick}
           >
             Cancel
           </Button>

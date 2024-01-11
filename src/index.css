@@ -14,7 +14,7 @@
   }
 
   body {
-    @apply font-sans text-b-lg text-gray bg-gray-very-light dark:bg-gray-super-dark;
+    @apply font-sans text-b-lg text-gray bg-gray-very-light dark:bg-gray-super-dark transition-colors duration-200;
   }
 
   ::-webkit-scrollbar {
@@ -35,5 +35,11 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: hsla(0, 0%, 50%, 0.55);
+  }
+}
+
+@layer components {
+  .close {
+    @apply absolute right-4 top-4 rounded-sm opacity-70 ring-offset-[hsl(0,0%,100%)] transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[hsl(240,5%,64.9%)] focus:ring-offset-2 data-[state=open]:bg-[hsl(240,4.8%,95.9%)] data-[state=open]:text-muted-[hsl(240,10%,3.9%)];
   }
 }

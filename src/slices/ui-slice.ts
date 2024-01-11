@@ -1,44 +1,48 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type UIState = {
-  dialogs: {
-    showBoardDeletion: boolean;
-    showBoardSelection: boolean;
-    showBoardForm: boolean;
-    showTaskDeletion: boolean;
-    showTaskDetails: boolean;
-    showTaskForm: boolean;
-  };
+  showEditBoardForm: boolean;
+  showNewBoardForm: boolean;
+  showDeleteBoardConfirmation: boolean;
+  showNewTaskForm: boolean;
+  showEditTaskForm: boolean;
+  showTaskDetails: boolean;
+  showDeleteTaskConfirmation: boolean;
+  showMenu: boolean;
+
+  theme: "light" | "dark";
 };
 
-type DialogVisibility = {
-  name: keyof UIState["dialogs"];
-  visibility: boolean;
+type Dialog = {
+  name: Exclude<keyof UIState, "theme">;
 };
 
 const initialState: UIState = {
-  dialogs: {
-    showBoardDeletion: false,
-    showBoardForm: false,
-    showBoardSelection: false,
-    showTaskDeletion: false,
-    showTaskDetails: false,
-    showTaskForm: false,
-  },
+  showEditBoardForm: false,
+  showNewBoardForm: false,
+  showDeleteBoardConfirmation: false,
+  showNewTaskForm: false,
+  showEditTaskForm: false,
+  showTaskDetails: false,
+  showDeleteTaskConfirmation: false,
+  showMenu: false,
+  theme: "light",
 };
 
 export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setDialogVisibility: (state, action: PayloadAction<DialogVisibility>) => {
-      const { name, visibility } = action.payload;
-
-      state.dialogs[name] = visibility;
+    toggleField: (state, action: PayloadAction<Dialog>) => {
+      const field = action.payload.name;
+      state[field] = !state[field];
+    },
+    toggleTheme: (state) => {
+      state.theme = state.theme === "light" ? "dark" : "light";
     },
   },
 });
 
-export const { setDialogVisibility } = uiSlice.actions;
+export const { toggleField, toggleTheme } = uiSlice.actions;
 
 export default uiSlice.reducer;

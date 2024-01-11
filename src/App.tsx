@@ -1,40 +1,18 @@
+import clsx from "clsx";
+import { Toaster } from "@/components/ui/toaster";
 import { Button, Toolbar } from "@/components/ui";
 import { Eye } from "@/components/icons";
-import { DialogContainers, EmptyBoardMessage } from "@/components/app";
+import { DialogContainers, MainView } from "@/components/app";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { setDialogVisibility } from "@/slices/ui-slice";
-import clsx from "clsx";
+import { toggleField } from "@/slices/ui-slice";
 
-const ShowSideMenuButton = () => {
-  const isSideMenuOpened = useAppSelector(
-    (state) => state.ui.dialogs.showBoardSelection
-  );
-
+function App() {
+  const showMenu = useAppSelector((state) => state.ui.showMenu);
   const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    dispatch(
-      setDialogVisibility({ name: "showBoardSelection", visibility: true })
-    );
+    dispatch(toggleField({ name: "showMenu" }));
   };
-
-  if (isSideMenuOpened) return null;
-
-  return (
-    <Button
-      size="icon"
-      className="hidden md:inline-flex fixed w-14 h-12 left-0 bottom-8 rounded-r-[6.25rem]"
-      onClick={handleClick}
-    >
-      <Eye className="relative -left-0.5 w-[18px] h-[14px]" />
-    </Button>
-  );
-};
-
-function App() {
-  const isSideMenuOpened = useAppSelector(
-    (state) => state.ui.dialogs.showBoardSelection
-  );
 
   return (
     <>
@@ -43,14 +21,26 @@ function App() {
       <main
         className={clsx(
           "h-[calc(100vh-var(--height-toolbar))] transition-[margin] duration-700",
-          isSideMenuOpened && "ml-[16.25rem]"
+          showMenu && "md:ml-[var(--width-sidebar)]"
         )}
       >
-        <EmptyBoardMessage />
+        <MainView />
       </main>
 
       <DialogContainers />
-      <ShowSideMenuButton />
+
+      {!showMenu && (
+        <Button
+          size="icon"
+          className="hidden md:inline-flex fixed w-14 h-12 left-0 bottom-8 rounded-r-[6.25rem]"
+          onClick={handleClick}
+        >
+          <Eye className="relative -left-0.5 w-[18px] h-[14px]" />
+          <span className="sr-only">sidebar menu toggle button</span>
+        </Button>
+      )}
+
+      <Toaster />
     </>
   );
 }

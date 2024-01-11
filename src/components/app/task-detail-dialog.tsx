@@ -1,3 +1,4 @@
+import { shallowEqual } from "react-redux";
 import { VerticalDots } from "@/components/icons";
 import {
   Button,
@@ -16,49 +17,98 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { selectTask, setTaskStatus, toggleSubTask } from "@/slices/app-slice";
+import { toggleField } from "@/slices/ui-slice";
 import { cn } from "@/lib/utils";
-
-const subTasks = [
-  {
-    id: 1,
-    name: "Research competitor pricing and business models",
-    done: false,
-  },
-  {
-    id: 2,
-    name: "Outline a business model that works for our solution",
-    done: true,
-  },
-  {
-    id: 3,
-    name: "Surveying and testing",
-    done: false,
-  },
-];
+import { useToast } from "../ui/use-toast";
 
 export const TaskDetailDialog = () => {
+  const showDialog = useAppSelector((state) => state.ui.showTaskDetails);
+  const { columns, task, subtasks } = useAppSelector((state) => {
+    const board = state.app.boards[state.app.selectedBoardId] || {
+      columnIds: [],
+    };
+    const columns = board.columnIds.map(
+      (columnId) => state.app.columns[columnId]
+    );
+    const task = state.app.tasks[state.app.selectedTaskId] || {
+      subtaskIds: [],
+    };
+    const subtasks = task.subtaskIds.map(
+      (subtaskId) => state.app.subtasks[subtaskId]
+    );
+
+    return { columns, task, subtasks };
+  }, shallowEqual);
+
+  const { toast } = useToast();
+
+  const dispatch = useAppDispatch();
+
+  const completedSubTasks = subtasks.filter((subTask) => subTask.isCompleted);
+
   const labelStyles = "text-[0.75rem] font-bold text-gray dark:text-white";
 
+  const sendFeedback = () => {
+    toast({
+      variant: "success",
+      description: "The task has been updated successfully.",
+    });
+  };
+
+  const handleCheckedChange = (subtaskId: string) => {
+    dispatch(toggleSubTask(subtaskId));
+    sendFeedback();
+  };
+
+  const handleStatusChange = (status: string) => {
+    dispatch(setTaskStatus(status));
+    sendFeedback();
+  };
+
+  const handleTaskEdit = () => {
+    dispatch(toggleField({ name: "showTaskDetails" }));
+    dispatch(toggleField({ name: "showEditTaskForm" }));
+  };
+
+  const handleTaskDelete = () => {
+    dispatch(toggleField({ name: "showTaskDetails" }));
+    dispatch(toggleField({ name: "showDeleteTaskConfirmation" }));
+  };
+
+  const handleOutsideClick = () => {
+    dispatch(selectTask(""));
+    dispatch(toggleField({ name: "showTaskDetails" }));
+  };
+
   return (
-    <Dialog open={false}>
+    <Dialog open={showDialog} onOpenChange={handleOutsideClick}>
       <DialogContent className="max-h-[85vh] overflow-auto">
         <DialogHeader className="flex justify-between items-center">
-          <DialogTitle>
-            Research pricing points of various competitors and trial different
-            business models
-          </DialogTitle>
+          <DialogTitle>{task?.title}</DialogTitle>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="ml-4 h-5 w-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0 h-7 w-7 rounded-sm hover:bg-slate-200"
+              >
                 <VerticalDots />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem className="text-b-lg text-gray focus:text-gray">
+              <DropdownMenuItem
+                className="text-b-lg text-gray focus:text-gray"
+                onClick={handleTaskEdit}
+              >
                 Edit Task
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-b-lg text-red focus:text-red">
+              <DropdownMenuItem
+                className="text-b-lg text-red focus:text-red"
+                onClick={handleTaskDelete}
+              >
                 Delete Task
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -67,34 +117,36 @@ export const TaskDetailDialog = () => {
 
         {/* Content */}
 
-        <p>
-          We know what we're planning to build for version one. Now we need to
-          finalise the first pricing model we'll use. Keep iterating the
-          subtasks until we have a coherent proposition.
-        </p>
+        <p>{task?.description || "This task doesn't have a description..."}</p>
 
         {/* Checkbox container */}
         <div className="space-y-4">
-          <p className={labelStyles}>Subtasks (2 of 3)</p>
+          <p className={labelStyles}>
+            Subtasks ({completedSubTasks.length} of {subtasks.length})
+          </p>
 
           {/* List of checkbox */}
           <div className="space-y-2">
-            {subTasks.map((subTask, index) => (
+            {subtasks.map((subTask, index) => (
               <div
                 key={subTask.id}
                 className="flex items-center gap-4 p-3 rounded bg-gray-very-light dark:bg-gray-super-dark"
               >
-                <Checkbox id={`task-${index + 1}`} name="task" />
+                <Checkbox
+                  id={`task-${index + 1}`}
+                  name="task"
+                  checked={subTask.isCompleted}
+                  onCheckedChange={() => handleCheckedChange(subTask.id)}
+                />
                 <label
                   htmlFor={`task-${index + 1}`}
                   className={cn(
                     "text-[0.75rem] leading-normal font-bold text-black dark:text-white",
-                    { "line-through": subTask.done },
-                    { "text-black/50": subTask.done },
-                    { "dark:text-white/50": subTask.done }
+                    subTask.isCompleted &&
+                      "line-through text-black/50 dark:text-white/50"
                   )}
                 >
-                  {subTask.name}
+                  {subTask.title}
                 </label>
               </div>
             ))}
@@ -105,17 +157,16 @@ export const TaskDetailDialog = () => {
           <label className={labelStyles} htmlFor="status">
             Current Status
           </label>
-          <Select
-            onValueChange={(val) => console.log(val)}
-            defaultValue="doing"
-          >
+          <Select onValueChange={handleStatusChange} value={task?.statusId}>
             <SelectTrigger id="status">
               <SelectValue placeholder="Select a status for the task" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="todo">Todo</SelectItem>
-              <SelectItem value="doing">Doing</SelectItem>
-              <SelectItem value="done">Done</SelectItem>
+              {columns.map((column) => (
+                <SelectItem key={column.id} value={column.id}>
+                  {column.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

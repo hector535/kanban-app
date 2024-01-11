@@ -8,27 +8,36 @@ import {
   DialogDescription,
 } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { setDialogVisibility } from "@/slices/ui-slice";
+import { removeTask } from "@/slices/app-slice";
+import { toggleField } from "@/slices/ui-slice";
+import { useToast } from "../ui/use-toast";
 
 export const DeleteTaskDialog = () => {
-  const { showTaskDeletion } = useAppSelector((state) => state.ui.dialogs);
+  const showDialog = useAppSelector(
+    (state) => state.ui.showDeleteTaskConfirmation
+  );
+  const task = useAppSelector(
+    (state) => state.app.tasks[state.app.selectedTaskId]
+  );
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
-  const dispatchDialogVisibility = () => {
-    dispatch(
-      setDialogVisibility({
-        name: "showBoardDeletion",
-        visibility: false,
-      })
-    );
+  const handleCancelClick = () => {
+    dispatch(toggleField({ name: "showDeleteTaskConfirmation" }));
+    dispatch(toggleField({ name: "showTaskDetails" }));
   };
 
-  const handleBoardDeletion = () => {
-    dispatchDialogVisibility();
+  const handleDeleteClick = () => {
+    dispatch(removeTask());
+    dispatch(toggleField({ name: "showDeleteTaskConfirmation" }));
+    toast({
+      variant: "success",
+      description: "The task has been deleted successfully.",
+    });
   };
 
   return (
-    <Dialog open={showTaskDeletion}>
+    <Dialog open={showDialog}>
       <DialogContent>
         <DialogHeader className="space-y-6">
           <DialogTitle className="text-red text-[1.125rem] leading-[1.4375rem] font-bold">
@@ -36,7 +45,7 @@ export const DeleteTaskDialog = () => {
           </DialogTitle>
           <DialogDescription>
             Are you sure you want to delete the
-            <span className="font-bold"> Build settings UI</span> task and its
+            <span className="font-bold"> {task?.title}</span> task and its
             subtasks? This action cannot be reversed.
           </DialogDescription>
         </DialogHeader>
@@ -45,7 +54,7 @@ export const DeleteTaskDialog = () => {
             type="button"
             variant="destructive"
             className="w-full"
-            onClick={handleBoardDeletion}
+            onClick={handleDeleteClick}
           >
             Delete
           </Button>
@@ -53,7 +62,7 @@ export const DeleteTaskDialog = () => {
             type="button"
             variant="secondary"
             className="w-full"
-            onClick={dispatchDialogVisibility}
+            onClick={handleCancelClick}
           >
             Cancel
           </Button>

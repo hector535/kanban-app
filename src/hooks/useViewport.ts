@@ -25,7 +25,7 @@ export const useViewport = () => {
     const resize = () => {
       clearTimeout(timerId);
 
-      timerId = setTimeout(() => setSize(getViewportSize()), 500);
+      timerId = setTimeout(() => setSize(getViewportSize()), 250);
     };
 
     window.addEventListener("resize", resize);
