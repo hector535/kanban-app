@@ -9,13 +9,12 @@ import { Logo, ArrowDown, Plus, VerticalDots } from "@/components/icons";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { toggleField } from "@/slices/ui-slice";
-import { selectBoardWithColumns } from "@/slices/app-slice";
 
 export const Toolbar = () => {
   const isMenuOpened = useAppSelector((state) => state.ui.showMenu);
-  const { selectedBoard, boardColumns } = useAppSelector(
-    selectBoardWithColumns
-  );
+  const selectedBoardId = useAppSelector((state) => state.app.selectedBoardId);
+  const boards = useAppSelector((state) => state.app.boards);
+  const selectedBoard = boards[selectedBoardId];
 
   const dispatch = useAppDispatch();
 
@@ -70,7 +69,7 @@ export const Toolbar = () => {
           size="icon"
           className="ml-auto rounded-3xl w-12 h-8 md:hidden"
           onClick={handleAddNewTaskClick}
-          disabled={!selectedBoard || boardColumns.length === 0}
+          disabled={!selectedBoardId || selectedBoard?.columnIds.length === 0}
         >
           <Plus />
           <span className="sr-only">Add new task</span>
@@ -80,7 +79,7 @@ export const Toolbar = () => {
           size="lg"
           className="hidden md:inline-flex ml-auto"
           onClick={handleAddNewTaskClick}
-          disabled={!selectedBoard || boardColumns.length === 0}
+          disabled={!selectedBoardId || selectedBoard?.columnIds.length === 0}
         >
           + Add New Task
         </Button>

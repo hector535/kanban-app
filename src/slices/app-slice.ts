@@ -137,6 +137,8 @@ const appSlice = createSlice({
       task.subtasks.forEach((subtask) => {
         state.subtasks[subtask.id] = { ...subtask, isCompleted: false };
       });
+
+      state.columns[task.statusId].taskIds.push(task.id);
     },
     editTask: (state, action: PayloadAction<TaskPayload>) => {
       const task = state.tasks[action.payload.id];
