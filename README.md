@@ -104,13 +104,13 @@ You must have [Node.js](https://nodejs.org/en) installed on your computer before
 Once installed, you can proceed to clone the project:
 
 ```
-    git clone https://github.com/hector535/kanban-web-app.git
+    git clone https://github.com/hector535/kanban-app.git
 ```
 
 Then, change the working directory to the cloned project:
 
 ```
-    cd kanban-web-app
+    cd kanban-app
 ```
 
 And finally, install the project's dependencies:
