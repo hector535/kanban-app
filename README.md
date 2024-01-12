@@ -8,9 +8,9 @@
     <a href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB" target="_blank"><strong>Frontend Mentor Challenge</strong></a>
     <br />
     <br />
-    <a href="https://invoice-app-4d8a75.netlify.app/">View Demo</a>
+    <a href="https://kanban-app-ed850e.netlify.app/">View Demo</a>
     ·
-    <a href="https://github.com/hector535/invoice-app/issues" target="_blank">Report Bug</a>
+    <a href="https://github.com/hector535/kanban-app/issues" target="_blank">Report Bug</a>
     <br />
     <br />
   </p>
@@ -42,7 +42,7 @@ This is a solution to the [Kanban task management web app](https://www.frontendm
 <h2 align="center">Links</h2>
 
 - Solution URL: [Kanban task management web app](https://www.frontendmentor.io/solutions/invoice-app-react-typescript-redux-toolkit-scss-iHo0UaB0P0)
-- Live Site URL: [https://invoice-app-4d8a75.netlify.app/](https://invoice-app-4d8a75.netlify.app/)
+- Live Site URL: [https://kanban-app-ed850e.netlify.app/](https://kanban-app-ed850e.netlify.app/)
 
 <br>
 
