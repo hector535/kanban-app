@@ -23,7 +23,11 @@ const globalState: GlobalState =
     : {
         app: {
           ...data,
-          selectedBoardId: "",
+          selectedBoardId: "board-1",
+        },
+        ui: {
+          showMenu: true,
+          theme: "light",
         },
       };
 

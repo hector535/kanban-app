@@ -41,7 +41,7 @@ This is a solution to the [Kanban task management web app](https://www.frontendm
 
 <h2 align="center">Links</h2>
 
-- Solution URL: [Kanban task management web app](https://www.frontendmentor.io/solutions/invoice-app-react-typescript-redux-toolkit-scss-iHo0UaB0P0)
+- Solution URL: [Kanban task management web app](https://www.frontendmentor.io/solutions/kanban-app-react-typescript-tailwind-css-CFsdaAoNXC)
 - Live Site URL: [https://kanban-app-ed850e.netlify.app/](https://kanban-app-ed850e.netlify.app/)
 
 <br>

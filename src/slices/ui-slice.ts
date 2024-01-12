@@ -26,7 +26,7 @@ const initialState: UIState = {
   showTaskDetails: false,
   showDeleteTaskConfirmation: false,
   showMenu: false,
-  theme: "light",
+  theme: "dark",
 };
 
 export const uiSlice = createSlice({
