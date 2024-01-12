@@ -1,3 +1,4 @@
+import { shallowEqual } from "react-redux";
 import {
   Button,
   DropdownMenu,
@@ -9,7 +10,6 @@ import { Logo, ArrowDown, Plus, VerticalDots } from "@/components/icons";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { toggleField } from "@/slices/ui-slice";
-import { shallowEqual } from "react-redux";
 
 export const Toolbar = () => {
   const isMenuOpened = useAppSelector((state) => state.ui.showMenu);
@@ -45,7 +45,7 @@ export const Toolbar = () => {
   return (
     <header
       className={
-        "transition-colors duration-200 h-[var(--height-toolbar)] bg-white flex md:grid md:grid-cols-[auto_1fr] dark:bg-gray-very-dark"
+        "fixed top-0 left-0 w-full transition-colors duration-200 h-[var(--height-toolbar)] bg-white flex md:grid md:grid-cols-[auto_1fr] dark:bg-gray-very-dark"
       }
     >
       <div

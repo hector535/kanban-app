@@ -18,6 +18,17 @@ type TaskPayload = Omit<Task, "subtaskIds"> & {
   subtasks: Omit<Subtask, "isCompleted">[];
 };
 
+type DragPayload = {
+  source: {
+    columnId: string;
+    index: number;
+  };
+  destination: {
+    columnId: string;
+    index: number;
+  };
+};
+
 const initialState: AppState = {
   boards: {},
   columns: {},
@@ -214,6 +225,18 @@ const appSlice = createSlice({
 
       state.columns[columnId].taskIds.push(task.id);
     },
+    dragTask: (state, action: PayloadAction<DragPayload>) => {
+      const { source, destination } = action.payload;
+
+      const sourceColumn = state.columns[source.columnId];
+      const destinationColumn = state.columns[destination.columnId];
+
+      const taskId = sourceColumn.taskIds.splice(source.index, 1).toString();
+
+      destinationColumn.taskIds.splice(destination.index, 0, taskId);
+
+      state.tasks[taskId].statusId = destination.columnId;
+    },
   },
 });
 
@@ -228,6 +251,7 @@ export const {
   selectTask,
   toggleSubTask,
   setTaskStatus,
+  dragTask,
 } = appSlice.actions;
 
 export default appSlice.reducer;
