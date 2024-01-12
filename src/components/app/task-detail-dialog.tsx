@@ -1,4 +1,3 @@
-import { shallowEqual } from "react-redux";
 import { VerticalDots } from "@/components/icons";
 import {
   Button,
@@ -18,35 +17,29 @@ import {
   SelectValue,
 } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { selectTask, setTaskStatus, toggleSubTask } from "@/slices/app-slice";
+import {
+  selectBoardWithColumns,
+  selectTask,
+  selectTaskWithSubtasks,
+  setTaskStatus,
+  toggleSubTask,
+} from "@/slices/app-slice";
 import { toggleField } from "@/slices/ui-slice";
 import { cn } from "@/lib/utils";
 import { useToast } from "../ui/use-toast";
 
 export const TaskDetailDialog = () => {
   const showDialog = useAppSelector((state) => state.ui.showTaskDetails);
-  const { columns, task, subtasks } = useAppSelector((state) => {
-    const board = state.app.boards[state.app.selectedBoardId] || {
-      columnIds: [],
-    };
-    const columns = board.columnIds.map(
-      (columnId) => state.app.columns[columnId]
-    );
-    const task = state.app.tasks[state.app.selectedTaskId] || {
-      subtaskIds: [],
-    };
-    const subtasks = task.subtaskIds.map(
-      (subtaskId) => state.app.subtasks[subtaskId]
-    );
-
-    return { columns, task, subtasks };
-  }, shallowEqual);
+  const { boardColumns } = useAppSelector(selectBoardWithColumns);
+  const { selectedTask, taskSubtasks } = useAppSelector(selectTaskWithSubtasks);
 
   const { toast } = useToast();
 
   const dispatch = useAppDispatch();
 
-  const completedSubTasks = subtasks.filter((subTask) => subTask.isCompleted);
+  const completedSubTasks = taskSubtasks.filter(
+    (subTask) => subTask.isCompleted
+  );
 
   const labelStyles = "text-[0.75rem] font-bold text-gray dark:text-white";
 
@@ -86,7 +79,7 @@ export const TaskDetailDialog = () => {
     <Dialog open={showDialog} onOpenChange={handleOutsideClick}>
       <DialogContent className="max-h-[85vh] overflow-auto">
         <DialogHeader className="flex justify-between items-center">
-          <DialogTitle>{task?.title}</DialogTitle>
+          <DialogTitle>{selectedTask?.title}</DialogTitle>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -117,17 +110,20 @@ export const TaskDetailDialog = () => {
 
         {/* Content */}
 
-        <p>{task?.description || "This task doesn't have a description..."}</p>
+        <p>
+          {selectedTask?.description ||
+            "This task doesn't have a description..."}
+        </p>
 
         {/* Checkbox container */}
         <div className="space-y-4">
           <p className={labelStyles}>
-            Subtasks ({completedSubTasks.length} of {subtasks.length})
+            Subtasks ({completedSubTasks.length} of {taskSubtasks.length})
           </p>
 
           {/* List of checkbox */}
           <div className="space-y-2">
-            {subtasks.map((subTask, index) => (
+            {taskSubtasks.map((subTask, index) => (
               <div
                 key={subTask.id}
                 className="flex items-center gap-4 p-3 rounded bg-gray-very-light dark:bg-gray-super-dark"
@@ -157,12 +153,15 @@ export const TaskDetailDialog = () => {
           <label className={labelStyles} htmlFor="status">
             Current Status
           </label>
-          <Select onValueChange={handleStatusChange} value={task?.statusId}>
+          <Select
+            onValueChange={handleStatusChange}
+            value={selectedTask?.statusId}
+          >
             <SelectTrigger id="status">
               <SelectValue placeholder="Select a status for the task" />
             </SelectTrigger>
             <SelectContent>
-              {columns.map((column) => (
+              {boardColumns.map((column) => (
                 <SelectItem key={column.id} value={column.id}>
                   {column.name}
                 </SelectItem>

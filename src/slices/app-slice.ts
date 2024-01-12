@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Board, Column, Task, Subtask } from "@/types";
+import { RootState } from "@/store";
 
 type AppState = {
   boards: Record<string, Board>;
@@ -253,5 +254,36 @@ export const {
   setTaskStatus,
   dragTask,
 } = appSlice.actions;
+
+const selectBoards = (state: RootState) => state.app.boards;
+const selectColumns = (state: RootState) => state.app.columns;
+const selectTasks = (state: RootState) => state.app.tasks;
+const selectSubtasks = (state: RootState) => state.app.subtasks;
+const selectSelectedBoardId = (state: RootState) => state.app.selectedBoardId;
+const selectSelectedTaskId = (state: RootState) => state.app.selectedTaskId;
+
+export const selectBoardWithColumns = createSelector(
+  [selectBoards, selectColumns, selectSelectedBoardId],
+  (boards, columns, selectedBoardId) => {
+    const selectedBoard = boards[selectedBoardId] || { columnIds: [] };
+    const boardColumns = selectedBoard.columnIds.map(
+      (columnId) => columns[columnId]
+    );
+
+    return { selectedBoard, boardColumns };
+  }
+);
+
+export const selectTaskWithSubtasks = createSelector(
+  [selectTasks, selectSubtasks, selectSelectedTaskId],
+  (tasks, subtasks, selectedTaskId) => {
+    const selectedTask = tasks[selectedTaskId] || { subtaskIds: [] };
+    const taskSubtasks = selectedTask.subtaskIds.map(
+      (subtaskId) => subtasks[subtaskId]
+    );
+
+    return { selectedTask, taskSubtasks };
+  }
+);
 
 export default appSlice.reducer;

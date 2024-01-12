@@ -1,5 +1,4 @@
 import { CSSProperties } from "react";
-import { shallowEqual } from "react-redux";
 import {
   DragDropContext,
   Draggable,
@@ -9,7 +8,11 @@ import {
 import { EmptyBoardMessage } from "@/components/app";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { toggleField } from "@/slices/ui-slice";
-import { dragTask, selectTask } from "@/slices/app-slice";
+import {
+  dragTask,
+  selectBoardWithColumns,
+  selectTask,
+} from "@/slices/app-slice";
 import { Task } from "@/types";
 
 type TaskListProps = {
@@ -30,14 +33,14 @@ const TaskList = (props: TaskListProps) => {
   return (
     <Droppable droppableId={columnId}>
       {(provided) => (
-        <ul
+        <div
           ref={provided.innerRef}
           className="content-start p-2 overflow-auto scrollbar-hide"
           {...provided.droppableProps}
         >
           {tasks.map(renderItem)}
           {provided.placeholder}
-        </ul>
+        </div>
       )}
     </Droppable>
   );
@@ -45,15 +48,17 @@ const TaskList = (props: TaskListProps) => {
 
 const TaskListItem = (props: TaskListItemProps) => {
   const { index, task, onItemClick } = props;
-  const subtasks = useAppSelector((state) =>
-    task.subtaskIds.map((subtaskId) => state.app.subtasks[subtaskId])
+  const subtasks = useAppSelector((state) => state.app.subtasks);
+  const taskSubtasks = task.subtaskIds.map((subtaskId) => subtasks[subtaskId]);
+
+  const completedSubtasks = taskSubtasks.filter(
+    (subTask) => subTask.isCompleted
   );
-  const completedSubtasks = subtasks.filter((subTask) => subTask.isCompleted);
 
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided) => (
-        <li
+        <div
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
@@ -65,33 +70,23 @@ const TaskListItem = (props: TaskListItemProps) => {
             {task.title}
           </h1>
           <p className="transition-colors duration-200 text-[0.75rem] font-bold text-gray">
-            {completedSubtasks.length} of {subtasks.length} subtasks
+            {completedSubtasks.length} of {taskSubtasks.length} subtasks
           </p>
-        </li>
+        </div>
       )}
     </Draggable>
   );
 };
 
 export const MainView = () => {
-  const { columns, tasks } = useAppSelector((state) => {
-    const board = state.app.boards[state.app.selectedBoardId] || {
-      columnIds: [],
-    };
-    const columns = board.columnIds.map(
-      (columnId) => state.app.columns[columnId]
-    );
-    const tasks = state.app.tasks;
-
-    return { columns, tasks };
-  }, shallowEqual);
-
+  const { boardColumns } = useAppSelector(selectBoardWithColumns);
+  const tasks = useAppSelector((state) => state.app.tasks);
   const dispatch = useAppDispatch();
 
-  if (columns.length === 0) return <EmptyBoardMessage />;
+  if (boardColumns.length === 0) return <EmptyBoardMessage />;
 
   const style: CSSProperties = {
-    gridTemplateColumns: `repeat(${columns.length + 1}, 280px) 24px`,
+    gridTemplateColumns: `repeat(${boardColumns.length + 1}, 280px) 24px`,
   };
 
   const handleItemClick = (taskId: string) => {
@@ -131,7 +126,7 @@ export const MainView = () => {
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <section style={style} className={`h-full grid gap-2 p-6`}>
-        {columns.map((column) => {
+        {boardColumns.map((column) => {
           const taskArr = column.taskIds.map((taskId) => tasks[taskId]);
 
           return (

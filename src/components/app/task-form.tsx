@@ -20,6 +20,7 @@ import {
 } from "@/components/ui";
 import { InputRow } from "@/components/app";
 import { useAppSelector } from "@/hooks";
+import { selectBoardWithColumns } from "@/slices/app-slice";
 
 const formSchema = z.object({
   title: z
@@ -49,10 +50,7 @@ type TaskFormProps = {
 export const TaskForm = (props: TaskFormProps) => {
   const { defaultValues, onFormSubmit } = props;
 
-  const columns = useAppSelector((state) => {
-    const board = state.app.boards[state.app.selectedBoardId];
-    return board.columnIds.map((columnId) => state.app.columns[columnId]);
-  });
+  const { boardColumns } = useAppSelector(selectBoardWithColumns);
 
   const form = useForm<TaskBoardFields>({
     resolver: zodResolver(formSchema),
@@ -164,7 +162,7 @@ export const TaskForm = (props: TaskFormProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {columns.map((column) => (
+                  {boardColumns.map((column) => (
                     <SelectItem key={column.id} value={column.id}>
                       {column.name}
                     </SelectItem>

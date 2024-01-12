@@ -25,7 +25,9 @@ export const ThemeSwitcher = (props: ThemeSwitcherProps) => {
     >
       <Sun />
       <Switch
+        aria-label="theme toggle button"
         checked={currentTheme === "dark"}
+        aria-checked={currentTheme === "dark"}
         onCheckedChange={handleChange}
       />
       <Moon />

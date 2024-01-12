@@ -1,4 +1,3 @@
-import { shallowEqual } from "react-redux";
 import {
   Button,
   DropdownMenu,
@@ -10,19 +9,13 @@ import { Logo, ArrowDown, Plus, VerticalDots } from "@/components/icons";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { toggleField } from "@/slices/ui-slice";
+import { selectBoardWithColumns } from "@/slices/app-slice";
 
 export const Toolbar = () => {
   const isMenuOpened = useAppSelector((state) => state.ui.showMenu);
-  const { board, columns } = useAppSelector((state) => {
-    const board = state.app.boards[state.app.selectedBoardId] || {
-      columnIds: [],
-    };
-    const columns = board.columnIds.map(
-      (columnId) => state.app.columns[columnId]
-    );
-
-    return { board, columns };
-  }, shallowEqual);
+  const { selectedBoard, boardColumns } = useAppSelector(
+    selectBoardWithColumns
+  );
 
   const dispatch = useAppDispatch();
 
@@ -64,20 +57,20 @@ export const Toolbar = () => {
           onClick={handleMenuClick}
         >
           <span className="transition-colors duration-200 text-h-lg text-black dark:text-white">
-            {board?.name || "Select a board"}
+            {selectedBoard?.name || "Select a board"}
           </span>
           <ArrowDown className="relative top-0.5" />
         </Button>
 
         <h1 className="transition-colors duration-200 hidden text-xl font-bold text-black md:block xl:text-2xl dark:text-white">
-          {board?.name || "Select a board"}
+          {selectedBoard?.name || "Select a board"}
         </h1>
 
         <Button
           size="icon"
           className="ml-auto rounded-3xl w-12 h-8 md:hidden"
           onClick={handleAddNewTaskClick}
-          disabled={!board || columns.length === 0}
+          disabled={!selectedBoard || boardColumns.length === 0}
         >
           <Plus />
           <span className="sr-only">Add new task</span>
@@ -87,13 +80,13 @@ export const Toolbar = () => {
           size="lg"
           className="hidden md:inline-flex ml-auto"
           onClick={handleAddNewTaskClick}
-          disabled={!board || columns.length === 0}
+          disabled={!selectedBoard || boardColumns.length === 0}
         >
           + Add New Task
         </Button>
 
         <DropdownMenu>
-          <DropdownMenuTrigger disabled={!board} asChild>
+          <DropdownMenuTrigger disabled={!selectedBoard} asChild>
             <Button
               variant="ghost"
               size="icon"

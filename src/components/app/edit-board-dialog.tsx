@@ -7,22 +7,14 @@ import {
 import { BoardFields, BoardForm } from "@/components/app";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { toggleField } from "@/slices/ui-slice";
-import { editBoard } from "@/slices/app-slice";
+import { editBoard, selectBoardWithColumns } from "@/slices/app-slice";
 import { useToast } from "../ui/use-toast";
-import { shallowEqual } from "react-redux";
 
 export const EditBoardFormDialog = () => {
   const showDialog = useAppSelector((state) => state.ui.showEditBoardForm);
-  const { board, columns } = useAppSelector((state) => {
-    const board = state.app.boards[state.app.selectedBoardId] || {
-      columnIds: [],
-    };
-    const columns = board.columnIds.map(
-      (columnId) => state.app.columns[columnId]
-    );
-
-    return { board, columns };
-  }, shallowEqual);
+  const { selectedBoard, boardColumns } = useAppSelector(
+    selectBoardWithColumns
+  );
 
   const { toast } = useToast();
 
@@ -33,7 +25,7 @@ export const EditBoardFormDialog = () => {
   };
 
   const handleFormSubmit = (form: BoardFields) => {
-    dispatch(editBoard({ ...form, id: board.id }));
+    dispatch(editBoard({ ...form, id: selectedBoard.id }));
     dispatch(toggleField({ name: "showEditBoardForm" }));
     toast({
       variant: "success",
@@ -50,8 +42,8 @@ export const EditBoardFormDialog = () => {
 
         <BoardForm
           defaultValues={{
-            ...(board || { id: "", name: "" }),
-            columns,
+            ...(selectedBoard || { id: "", name: "" }),
+            columns: boardColumns,
           }}
           onFormSubmit={handleFormSubmit}
         />
